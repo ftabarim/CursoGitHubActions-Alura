@@ -5,17 +5,18 @@ name: Go
 
 on:
   push:
-    branches: [ "aula_5" ]
+    branches: [ '*' ]
   pull_request:
-    branches: [ "aula_5" ]
+    branches: [ '*' ]
 
 jobs:
 
   test:
-    runs-on: ubuntu-20.04
+    runs-on: ${{matrix.os}}
     strategy:
       matrix:
         go_version: ['1.18', '<1.18', '>=1.18']
+        os: ['ubuntu-20.04', '<ubuntu-20.04', '>=ubuntu-20.04']
     steps:
     - uses: actions/checkout@v3
 
@@ -36,7 +37,7 @@ jobs:
       
   build:
     needs: test
-    runs-on: ubuntu-20.04
+    runs-on: ${{matrix.os}}
     steps:
     - uses: actions/checkout@v3
     - name: Build
