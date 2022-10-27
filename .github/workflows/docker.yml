@@ -33,4 +33,4 @@ jobs:
           context: .
           file: ./dockerfile
           push: true
-          tags: fetabarim/go_ci:${{github.ref_name}}
+          tags: fetabarim/go_ci:${{github.run_id}}
