@@ -21,3 +21,11 @@ jobs:
         with:
           username: ${{secrets.USERNAME_DOCKERHUB}}
           password: ${{secrets.PASSWORD_DOCKERHUB}}
+
+      - name: Build and push Docker images
+        uses: docker/build-push-action@v3.2.0
+        with:
+          context: .
+          file: ./dockerfile
+          push: true
+          tags: fetabarim/go_ci:${{github.ref_name}}
