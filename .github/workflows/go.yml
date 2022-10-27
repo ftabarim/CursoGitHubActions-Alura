@@ -5,15 +5,14 @@ name: Go
 
 on:
   push:
-    branches: [ '*' ]
+    branches: ["*"]
   pull_request:
-    branches: [ '*' ]
+    branches: ["*"]
 
 jobs:
-
   test:
     runs-on: ${{matrix.os}}
-    env: 
+    env:
       HOST: localhost
       USER: root
       PASSWORD: root
@@ -21,40 +20,37 @@ jobs:
       PORT: 5432
     strategy:
       matrix:
-        go_version: ['1.18', '1.17']
-        os: ['ubuntu-22.04', 'ubuntu-20.04', 'ubuntu-18.04']
+        go_version: ["1.18", "1.17"]
+        os: ["ubuntu-22.04", "ubuntu-20.04", "ubuntu-18.04"]
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Set up Go ${{matrix.os}} and ${{matrix.go_version}}
-      uses: actions/setup-go@v3
-      with:
-        go-version: ${{ matrix.go_version }}
+      - name: Set up Go ${{matrix.os}} and ${{matrix.go_version}}
+        uses: actions/setup-go@v3
+        with:
+          go-version: ${{ matrix.go_version }}
 
+      - name: Build-DB ${{matrix.os}} and ${{matrix.go_version}}
+        run: docker compose build
 
-    - name: Build-DB ${{matrix.os}} and ${{matrix.go_version}}
-      run: docker compose build
-      
-    - name: Create-DB ${{matrix.os}} and ${{matrix.go_version}}
-      run: docker compose up -d
+      - name: Create-DB ${{matrix.os}} and ${{matrix.go_version}}
+        run: docker compose up -d
 
-    - name: Test ${{matrix.os}} and ${{matrix.go_version}}
-      run: go test -v main_test.go
-      
+      - name: Test ${{matrix.os}} and ${{matrix.go_version}}
+        run: go test -v main_test.go
+
   build:
     needs: test
     runs-on: ${{matrix.os}}
     strategy:
       matrix:
-        os: ['ubuntu-22.04', 'ubuntu-20.04', 'ubuntu-18.04']
+        os: ["ubuntu-22.04", "ubuntu-20.04", "ubuntu-18.04"]
     steps:
-    - uses: actions/checkout@v3
-    - name: Build ${{matrix.os}} and ${{matrix.go_version}}
-      run: go build -v main.go
-      
+      - uses: actions/checkout@v3
+      - name: Build ${{matrix.os}} and ${{matrix.go_version}}
+        run: go build -v main.go
+
   docker:
     needs: build
     uses: ./.github/workflows/docker.yml
     secrets: inherit
-    
-    
